@@ -36,6 +36,26 @@ export function isInitialized() {
 export function getClient() { return _client; }
 export function getBucket()  { return _bucket; }
 
+/**
+ * Call the Vercel /api/ensure-cors serverless function to set CORS on the
+ * R2 bucket via a server-to-server call (no CORS restrictions apply there).
+ * Safe to call multiple times — idempotent.
+ */
+export async function ensureCors() {
+  try {
+    const res = await fetch('/api/ensure-cors', { method: 'GET' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Unknown error');
+    console.log('[MediaBucket] CORS ensured:', data.message);
+    return true;
+  } catch (err) {
+    // In local dev the /api route won't exist — silently ignore
+    console.warn('[MediaBucket] ensure-cors skipped (local dev?):', err.message);
+    return false;
+  }
+}
+
+
 export async function listVideos() {
   if (!_client) throw new Error('R2 not configured');
   const cmd = new ListObjectsV2Command({ Bucket: _bucket });

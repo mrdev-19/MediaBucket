@@ -3,7 +3,8 @@ import { ToastProvider } from './ToastContext';
 import PasswordGate from './PasswordGate';
 import Dashboard    from './Dashboard';
 import { loadSavedConfig, saveConfig } from './SettingsModal';
-import { initR2 } from './r2Service';
+import { initR2, ensureCors } from './r2Service';
+
 
 // ── Bootstrap R2 credentials ──────────────────────────────────────────
 // Priority: 1) .env variables  2) localStorage from Settings modal
@@ -22,14 +23,19 @@ if (hasEnvConfig) {
   try {
     initR2(envConfig);
     saveConfig(envConfig);          // mirrors to localStorage for modal display
+    ensureCors();                   // set CORS on R2 bucket via Vercel serverless fn
   } catch (_) { /* ignore */ }
 } else {
   // Fall back to manually saved config from the Settings modal
   const saved = loadSavedConfig();
   if (saved) {
-    try { initR2(saved); } catch (_) { /* ignore */ }
+    try {
+      initR2(saved);
+      ensureCors();                 // set CORS on R2 bucket via Vercel serverless fn
+    } catch (_) { /* ignore */ }
   }
 }
+
 // ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
