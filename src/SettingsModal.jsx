@@ -69,37 +69,36 @@ export default function SettingsModal({ onClose, onConfigured }) {
     setCorsError(false);
 
     try {
-      // Init the client (pure local operation — no network call)
+      // Save credentials so the UI shows "R2 Connected"
       initR2(form);
-
-      // Try a lightweight connectivity test (ListObjects with max-keys=1)
-      const { ListObjectsV2Command } = await import('@aws-sdk/client-s3');
-      const { getClient, getBucket } = await import('./r2Service');
-      await getClient().send(new ListObjectsV2Command({ Bucket: getBucket(), MaxKeys: 1 }));
-
-      // ✅ CORS is fine — save and proceed
       saveConfig(form);
+
+      // Test via the server-side API proxy — no CORS issues
+      const res = await fetch('/api/r2?action=list');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Server error ${res.status}`);
+      }
+
       toast('Connected to Cloudflare R2 ✓', 'success');
       onConfigured(form);
       onClose();
 
     } catch (err) {
-      if (isCorsError(err)) {
-        // CORS is blocking — save creds anyway and show the fix guide
+      // If /api/r2 isn't available (local dev without Vercel CLI), skip test
+      if (err.message.includes('Failed to fetch') || err.message.includes('404')) {
         saveConfig(form);
-        initR2(form); // keep initialized so upload/download still works via presigned URLs
-        setCorsError(true);
-        setShowCors(true);
+        toast('Credentials saved (run via Vercel CLI to test connection)', 'info', 5000);
+        onConfigured(form);
+        onClose();
       } else {
-        // Real auth / config error
         toast(`Connection error: ${err.message}`, 'error', 7000);
-        setSaving(false);
-        return;
       }
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   }
+
 
   function handleContinueAnyway() {
     // Credentials already saved in handleSave above
