@@ -1,0 +1,194 @@
+.upload-panel { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Drop zone ── */
+.upload-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(255,255,255,0.02);
+}
+
+.upload-dropzone:hover,
+.upload-dropzone:focus {
+  border-color: var(--accent-indigo);
+  background: rgba(99,102,241,0.05);
+  outline: none;
+}
+
+.upload-dropzone--active {
+  border-color: var(--accent-blue);
+  background: rgba(59,130,246,0.08);
+  transform: scale(1.01);
+}
+
+.upload-dz-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-indigo);
+  transition: var(--transition);
+}
+
+.upload-dropzone:hover .upload-dz-icon,
+.upload-dropzone--active .upload-dz-icon {
+  background: rgba(99,102,241,0.2);
+  transform: scale(1.1);
+}
+
+.upload-dz-text { text-align: center; }
+
+.upload-dz-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.upload-dz-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.upload-dz-link {
+  color: var(--accent-blue);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── File list ── */
+.upload-list { display: flex; flex-direction: column; gap: 12px; }
+
+.upload-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.upload-list-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.upload-list-actions { display: flex; gap: 8px; }
+
+.upload-items { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Upload Item ── */
+.upload-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.upload-item--done  { border-color: rgba(34,197,94,0.2);  background: rgba(34,197,94,0.05);  }
+.upload-item--error { border-color: rgba(239,68,68,0.2);  background: rgba(239,68,68,0.04);  }
+.upload-item--uploading { border-color: rgba(99,102,241,0.25); }
+
+.upload-item-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.upload-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upload-item-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upload-item-size {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.upload-item-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-item-progress .progress-bar-wrap { flex: 1; }
+
+.upload-item-pct {
+  font-size: 0.75rem;
+  color: var(--accent-indigo);
+  font-weight: 600;
+  min-width: 32px;
+  text-align: right;
+}
+
+.upload-item-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.upload-item-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot--pending { background: var(--text-muted); }
+
+.status-spin { font-size: 0.85rem; }
+
+.status-icon {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.status-icon--done  { background: rgba(34,197,94,0.2);  color: var(--success); }
+.status-icon--error { background: rgba(239,68,68,0.15); color: var(--error);   }
+
+@media (max-width: 520px) {
+  .upload-dropzone { padding: 32px 20px; }
+  .upload-item { flex-wrap: wrap; gap: 10px; }
+  .upload-item-right { width: 100%; justify-content: flex-end; }
+}
